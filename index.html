@@ -6,60 +6,112 @@
 <title>الراديو</title>
 <script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
-*{box-sizing:border-box}
-body{margin:0;font-family:system-ui,Tahoma,sans-serif;background:#12141a;color:#eee;padding:16px;max-width:560px;margin-inline:auto}
-h1{font-size:22px;margin:0 0 12px}
-.card{background:#1e222b;border-radius:12px;padding:14px;margin:10px 0}
-button{background:#5865f2;color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:15px;cursor:pointer}
-button.red{background:#c0392b}button.green{background:#2e8b57}button.gray{background:#3a3f4b}
-.room{display:flex;justify-content:space-between;align-items:center}
-.tag{font-size:12px;padding:2px 8px;border-radius:6px;background:#3a3f4b;margin-inline-start:6px}
-.mil{background:#2e8b57}
-#ptt{width:100%;padding:22px;font-size:18px;margin-top:8px}
-#ptt.on{background:#2e8b57}
-.hide{display:none}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+body{margin:0;min-height:100vh;font-family:Tahoma,system-ui,sans-serif;background:linear-gradient(#0e1b36,#070d1c);color:#e6e9ef;padding:70px 14px 30px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.radio{position:relative;width:100%;max-width:290px;direction:ltr;background:linear-gradient(90deg,#4b5345,#6a7362 45%,#566050);border-radius:26px 26px 40px 40px;padding:70px 18px 24px;box-shadow:0 18px 40px #000a,inset 0 2px 0 #ffffff30,inset 0 -3px 0 #0006}
+.ant{position:absolute;top:-62px;right:34px;width:26px;height:110px;background:linear-gradient(90deg,#3c4338,#6a7362,#3c4338);border-radius:13px 13px 0 0}
+.knob{position:absolute;top:-34px;left:22px;width:46px;height:64px;border-radius:10px 10px 4px 4px;background:repeating-linear-gradient(90deg,#0b0c0d 0 4px,#2b2e31 4px 7px);box-shadow:inset 0 8px 8px #0008;cursor:pointer;transition:transform .25s}
+.preset{position:absolute;top:30px;left:50%;transform:translateX(-50%);font:bold 10px Arial;letter-spacing:1px;color:#e8ecdf}
+.slot{height:36px;border-radius:10px;background:#3d4439;box-shadow:inset 0 3px 6px #0007;margin-bottom:16px}
+.bezel{background:#0d0f10;border-radius:18px;padding:12px;margin-bottom:12px}
+.lcd{position:relative;height:96px;border-radius:6px;background:linear-gradient(#c4d374,#aebd5f);box-shadow:inset 0 0 14px #5a6a2a;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.lcd.off{background:#8d9a5d;box-shadow:inset 0 0 18px #3b4520}
+#scr{font:300 50px "Courier New",monospace;letter-spacing:3px;color:#2c3516;transform:skewX(-6deg)}
+.ind{position:absolute;top:5px;font:bold 11px Arial;color:#2c3516;opacity:0}
+.ind.on{opacity:1}
+#tx{left:8px}#mu{right:8px}
+.keys{display:grid;grid-template-columns:1fr 1.25fr 1fr;grid-template-rows:62px 62px;gap:9px;background:#0d0f10;border-radius:16px;padding:9px}
+.k{background:linear-gradient(#34373a,#232527);border:0;border-radius:11px;color:#fff;font:bold 22px Arial;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:inset 0 1px 0 #ffffff25,0 2px 0 #000}
+.k:active{filter:brightness(1.5)}
+.k.act{background:linear-gradient(#7b2a22,#4a1812)}
+.rock{grid-area:1/2/3/3;display:grid;grid-template-rows:1fr 1fr;border-radius:14px;background:linear-gradient(#34373a,#232527);box-shadow:inset 0 1px 0 #ffffff25,0 2px 0 #000;overflow:hidden}
+.rock .k{border-radius:0;background:none;box-shadow:none}
+.rock .k:first-child{border-bottom:1px solid #0007}
+.panel{width:100%;max-width:290px;background:#ffffff10;border:1px solid #ffffff20;border-radius:14px;padding:12px;font-size:14px}
+.tag{font-size:11px;padding:1px 8px;border-radius:6px;background:#3a4a2a;margin-inline-start:6px}
+.tag.mil{background:#8a5a14}
+.p{padding:3px 0}
+button.b{background:#5865f2;color:#fff;border:0;border-radius:10px;padding:11px 16px;font-size:15px;cursor:pointer}
+button.g{background:#2e8b57}
+#ptt{width:150px;height:150px;border-radius:50%;border:5px solid #000;display:block;margin:6px auto;font-size:16px;color:#fff;cursor:pointer;background:radial-gradient(circle at 35% 30%,#ff6a5a,#a01810 70%);box-shadow:0 6px 0 #000}
+#ptt.on{background:radial-gradient(circle at 35% 30%,#7dff8a,#0f7a22 70%);transform:translateY(4px);box-shadow:0 2px 0 #000,0 0 30px #3f5}
+input{flex:1;min-width:0;background:#0d0f10;color:#c4d374;border:1px solid #ffffff30;border-radius:10px;padding:10px;font-size:18px;text-align:center;letter-spacing:2px;user-select:text;-webkit-user-select:text}
+#lcd{cursor:text}
+#fin{width:100%;background:none;border:0;outline:0;color:#2c3516;font:300 50px "Courier New",monospace;letter-spacing:3px;text-align:center;padding:0;border-radius:0}
+#ok{position:absolute;bottom:4px;right:6px;background:#2c3516;color:#c4d374;border:0;border-radius:6px;padding:2px 10px;font-size:15px}
+.hide{display:none!important}
 </style>
 </head>
 <body>
-<h1>📻 الراديو</h1>
-<div id="login" class="card hide"><p>سجّل دخولك بديسكورد عشان يتحقق من رتبتك.</p><button onclick="login()">دخول بـ Discord</button></div>
-<div id="home" class="hide"><div class="card"><span id="who"></span><span id="rank" class="tag"></span></div><div id="rooms"></div></div>
-<div id="inroom" class="hide">
-  <div class="card"><b id="rname"></b> <button class="gray" onclick="leave()" style="float:left">خروج</button></div>
-  <div class="card"><b>المتصلين:</b><div id="plist"></div></div>
-  <div id="reqs"></div>
-  <button id="ptt" class="gray hide">🎙️ اضغط مطوّلاً للتكلم</button>
-  <button id="askmic" class="gray hide" style="width:100%;margin-top:8px" onclick="askMic()">✋ اطلب المايك</button>
+<div id="login" class="panel hide"><p>سجّل دخولك بديسكورد عشان يتحقق من رتبتك.</p><button class="b" onclick="login()">دخول بـ Discord</button></div>
+
+<div class="radio">
+  <div class="ant"></div>
+  <div class="knob" id="knob" onclick="vol()"></div>
+  <div class="preset">PRESET</div>
+  <div class="slot"></div>
+  <div class="bezel"><div class="lcd off" id="lcd" onclick="edit()"><span class="ind" id="tx">TX</span><span class="ind" id="mu">MUTE</span><span id="scr">----</span><input id="fin" class="hide" type="text" inputmode="numeric" maxlength="5" onblur="commit()" onkeydown="if(event.key==='Enter')commit()"><button id="ok" class="hide" onclick="commit()">✓</button></div></div>
+  <div class="keys">
+    <button class="k" style="grid-area:1/1" onclick="pw()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round"><path d="M12 3v8M6.5 6.5a8 8 0 1 0 11 0"/></svg></button>
+    <div class="rock"><button class="k" onclick="step(1)">▲</button><button class="k" onclick="step(-1)">▼</button></div>
+    <button class="k" style="grid-area:1/3" onclick="preset(1)">1</button>
+    <button class="k" id="bmu" style="grid-area:2/1" onclick="mute()"><svg width="26" height="24" viewBox="0 0 26 24"><path d="M3 9v6h4l5 4V5L7 9H3z" fill="#fff"/><path d="M16 9l6 6M22 9l-6 6" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/></svg></button>
+    <button class="k" style="grid-area:2/3" onclick="preset(2)">2</button>
+  </div>
 </div>
+
+<div id="choice" class="panel hide" style="text-align:center"><p style="margin-top:0">تدخل الراديو كـ؟</p><button class="b g" onclick="pick(true)">🪖 عسكري</button> <button class="b" onclick="pick(false)">👤 عادي</button></div>
+
+<div id="info" class="panel hide">
+  <div><b id="who"></b><span id="rank" class="tag"></span></div>
+  <div id="chname" style="margin:6px 0;opacity:.8"></div>
+  <div id="plist"></div>
+</div>
+<div id="reqs" style="width:100%;max-width:290px"></div>
+<button id="ptt" class="hide">🎙️<br>اضغط للتكلم</button>
+<button id="askmic" class="b hide" onclick="askMic()">✋ اطلب المايك</button>
 <div id="audios"></div>
 
 <script>
-/* ===== الإعدادات: عدّلها ===== */
+/* ===== الإعدادات ===== */
 const CLIENT_ID = "1568272191936790669";
 const GUILD_ID = "1539659625584918659";
 const MILITARY_ROLE_IDS = ["1543227588514680882","1543227661726253106","1568294804687945768"]; // قائد الشرطة، فريق، عسكري
-const APP = "alsaqr-radio-7429"; // غيّره لاسم مميز (عشان ما تتعارض غرفك مع غيرك)
-const ROOMS = [
-  {id:"public", name:"الراديو العام", mil:false},
-  {id:"mil1", name:"موجة العساكر 1", mil:true},
-  {id:"mil2", name:"موجة العساكر 2", mil:true},
-  {id:"mil3", name:"موجة العساكر 3", mil:true}
-];
-/* ============================= */
+const APP = "alsaqr-radio-7429";
+const PRESETS = ["1000","1485"]; // زر 1 وزر 2 (غيّر الأرقام لو تبي)
+/* ===================== */
 
 const $=id=>document.getElementById(id);
-const show=(...a)=>{["login","home","inroom"].forEach(x=>$(x).classList.add("hide"));a.forEach(x=>$(x).classList.remove("hide"))};
-let me=null, peer, room, mic, canTalk=false, peers=[], hostConns={}, hostConn=null, isHost=false, called={}, reqs={};
+const VOL=[.25,.5,.75,1];
+let pend=null,asMil=false,me=null,peer,room,mic,canTalk=false,peers=[],hostConns={},hostConn=null,isHost=false,called={},reqs={},on=false,ch="1000",muted=false,vi=3,flashT;
+const nameOf=f=>"موجة "+f;
+const valid=f=>/^\d{1,5}$/.test(f);
+const allowed=f=>valid(f);
+function go(f){
+  f=String(parseInt(f,10));
+  if(!me)return flash("----");
+  if(!allowed(f))return flash("ERR");
+  ch=f;
+  if(me.mil&&!on){pend=f;$("choice").classList.remove("hide");return}
+  if(!me.mil)asMil=false;
+  if(on)leave();
+  join(f);
+}
+function pick(m){
+  asMil=m;$("choice").classList.add("hide");
+  const f=pend;pend=null;join(f);
+}
+function goInput(){const v=$("fin").value.trim();if(v)go(v)}
 
 function login(){
-  const u="https://discord.com/oauth2/authorize?client_id="+CLIENT_ID+"&response_type=token&redirect_uri="+encodeURIComponent(location.origin+location.pathname)+"&scope="+encodeURIComponent("identify guilds.members.read");
-  location.href=u;
+  location.href="https://discord.com/oauth2/authorize?client_id="+CLIENT_ID+"&response_type=token&redirect_uri="+encodeURIComponent(location.origin+location.pathname)+"&scope="+encodeURIComponent("identify guilds.members.read");
 }
 
 async function init(){
+  vol(true);
   const h=new URLSearchParams(location.hash.slice(1));
   const tok=h.get("access_token")||sessionStorage.getItem("tok");
-  if(!tok){show("login");return}
+  if(!tok){$("login").classList.remove("hide");return}
   sessionStorage.setItem("tok",tok);
   history.replaceState(null,"",location.pathname);
   try{
@@ -70,50 +122,92 @@ async function init(){
     const r=await fetch("https://discord.com/api/users/@me/guilds/"+GUILD_ID+"/member",H);
     if(r.ok){const m=await r.json();mil=(m.roles||[]).some(x=>MILITARY_ROLE_IDS.includes(x))}
     me={id:u.id,name:u.global_name||u.username,mil};
-    $("who").textContent=me.name;
-    $("rank").textContent=mil?"عسكري":"مدني";
-    $("rank").className="tag "+(mil?"mil":"");
-    renderRooms();show("home");
-  }catch(e){sessionStorage.removeItem("tok");show("login")}
+    screen();info();
+  }catch(e){sessionStorage.removeItem("tok");$("login").classList.remove("hide")}
 }
 
-function renderRooms(){
-  $("rooms").innerHTML="";
-  ROOMS.filter(r=>!r.mil||me.mil).forEach(r=>{
-    const d=document.createElement("div");d.className="card room";
-    d.innerHTML="<span>"+r.name+(r.mil?'<span class="tag mil">عسكري</span>':"")+"</span>";
-    const b=document.createElement("button");b.textContent="دخول";b.onclick=()=>join(r);
-    d.appendChild(b);$("rooms").appendChild(d);
+/* ===== الشاشة والأزرار ===== */
+function screen(){
+  $("lcd").classList.toggle("off",!on);
+  $("scr").textContent=!me?"----":on?room.freq:"";
+}
+function flash(t){$("scr").textContent=t;clearTimeout(flashT);flashT=setTimeout(screen,900)}
+let editing=false;
+function edit(){
+  if(!me||editing)return;
+  editing=true;clearTimeout(flashT);
+  $("scr").classList.add("hide");$("fin").classList.remove("hide");$("ok").classList.remove("hide");
+  $("fin").value="";$("fin").focus();
+}
+function commit(){
+  if(!editing)return;editing=false;
+  const v=$("fin").value.trim();
+  $("fin").classList.add("hide");$("ok").classList.add("hide");$("scr").classList.remove("hide");
+  screen();
+  if(v)go(v);
+}
+function pw(){if(!me)return flash("----");on?leave():go(ch)}
+function step(d){
+  if(!me)return;
+  const f=String(Math.min(99999,Math.max(1,(parseInt(ch,10)||0)+d)));
+  if(!allowed(f))return flash("DENIED");
+  if(on)go(f);else{ch=f;flash(f);info()}
+}
+function preset(n){if(me)go(PRESETS[n-1])}
+function mute(){muted=!muted;applyAudio();$("mu").classList.toggle("on",muted);$("bmu").classList.toggle("act",muted);flash(muted?"MUTE":"UNMUTE")}
+function vol(silent){
+  if(!silent)vi=(vi+1)%4;
+  $("knob").style.transform="rotate("+(vi*25-40)+"deg)";
+  applyAudio();if(!silent)flash("VOL "+(vi+1));
+}
+function applyAudio(){document.querySelectorAll("audio").forEach(a=>{a.volume=VOL[vi];a.muted=muted})}
+
+function info(){
+  if(!me)return;
+  $("info").classList.remove("hide");$("login").classList.add("hide");
+  $("who").textContent=me.name;
+  $("rank").textContent=me.mil?"عسكري":"مدني";$("rank").className="tag"+(me.mil?" mil":"");
+  $("chname").textContent=(on?"🟢 متصل: "+room.name+" ("+room.freq+")"+(me.mil?(asMil?" • عسكري":" • عادي"):""):"⚫ مطفي، الموجة: "+nameOf(ch)+" ("+ch+")");
+  $("plist").innerHTML=on?peers.map(p=>'<div class="p">'+esc(p.name)+(p.mil?'<span class="tag mil">عسكري</span>':"")+"</div>").join(""):"";
+  $("reqs").innerHTML="";
+  if(on&&asMil)Object.entries(reqs).forEach(([id,n])=>{
+    const d=document.createElement("div");d.className="panel";d.style.marginTop="8px";
+    d.innerHTML="✋ "+esc(n)+" يطلب المايك ";
+    const b=document.createElement("button");b.className="b g";b.textContent="موافقة";b.onclick=()=>grant(id);
+    d.appendChild(b);$("reqs").appendChild(d);
   });
+  $("ptt").classList.toggle("hide",!(on&&canTalk));
+  $("askmic").classList.toggle("hide",!(on&&!canTalk));
 }
 
+/* ===== الاتصال ===== */
 async function join(r){
   try{mic=await navigator.mediaDevices.getUserMedia({audio:true})}
   catch(e){alert("لازم تسمح بالمايك");return}
   mic.getAudioTracks()[0].enabled=false;
-  room=r;canTalk=me.mil;called={};reqs={};peers=[];hostConns={};isHost=false;
-  $("rname").textContent=r.name;
-  const hid="radio-"+APP+"-"+r.id;
+  room={freq:r,name:nameOf(r)};canTalk=asMil;called={};reqs={};peers=[];hostConns={};isHost=false;on=true;
+  screen();info();
+  const hid="radio-"+APP+"-f"+r;
   peer=new Peer(hid);
-  peer.on("open",()=>{isHost=true;peers=[{id:hid,name:me.name,mil:me.mil}];setup();ui()});
+  peer.on("open",()=>{isHost=true;peers=[{id:hid,name:me.name,mil:asMil}];setup();info()});
   peer.on("error",e=>{
     if(e.type==="unavailable-id"){
       peer=new Peer();
+      peer.on("error",()=>{leave();flash("ERR")});
       peer.on("open",()=>{
         setup();
-        hostConn=peer.connect(hid,{reliable:true});
-        hostConn.on("open",()=>hostConn.send({t:"join",name:me.name,mil:me.mil}));
-        hostConn.on("data",onData);
-        hostConn.on("close",()=>{alert("صاحب الغرفة طلع");leave()});
+        const c=peer.connect(hid,{reliable:true});hostConn=c;
+        c.on("open",()=>c.send({t:"join",name:me.name,mil:asMil}));
+        c.on("data",onData);
+        c.on("close",()=>{if(hostConn===c){leave();flash("OFF")}});
       });
-    }
+    }else{leave();flash("ERR")}
   });
-  show("inroom");
 }
 
 function setup(){
   peer.on("call",c=>{c.answer(mic);c.on("stream",s=>play(c.peer,s))});
-  if(isHost) peer.on("connection",c=>{
+  if(isHost)peer.on("connection",c=>{
     hostConns[c.peer]=c;
     c.on("data",d=>hostData(d,c));
     c.on("close",()=>{delete hostConns[c.peer];peers=peers.filter(p=>p.id!==c.peer);bcast()});
@@ -124,11 +218,11 @@ function hostData(d,c){
   if(d.t==="join"){peers.push({id:c.peer,name:d.name,mil:d.mil});bcast()}
   if(d.t==="req"){
     Object.values(hostConns).forEach(x=>{const p=peers.find(p=>p.id===x.peer);if(p&&p.mil)x.send({t:"req",id:c.peer,name:d.name})});
-    if(me.mil) onData({t:"req",id:c.peer,name:d.name});
+    if(asMil)onData({t:"req",id:c.peer,name:d.name});
   }
   if(d.t==="grant"){
-    if(d.to===peer.id) onData({t:"grant"});
-    else if(hostConns[d.to]) hostConns[d.to].send({t:"grant"});
+    if(d.to===peer.id)onData({t:"grant"});
+    else if(hostConns[d.to])hostConns[d.to].send({t:"grant"});
   }
 }
 
@@ -141,11 +235,11 @@ function onData(d){
   if(d.t==="peers"){
     peers=d.list;
     const idx=peers.findIndex(p=>p.id===peer.id);
-    for(let i=0;i<idx;i++) callPeer(peers[i].id);
-    ui();
+    for(let i=0;i<idx;i++)callPeer(peers[i].id);
+    info();
   }
-  if(d.t==="req"){reqs[d.id]=d.name;ui()}
-  if(d.t==="grant"){canTalk=true;ui()}
+  if(d.t==="req"){reqs[d.id]=d.name;info()}
+  if(d.t==="grant"){canTalk=true;info();flash("TX OK")}
 }
 
 function callPeer(id){
@@ -157,49 +251,39 @@ function callPeer(id){
 function play(id,s){
   let a=document.getElementById("a"+id);
   if(!a){a=document.createElement("audio");a.id="a"+id;a.autoplay=true;$("audios").appendChild(a)}
-  a.srcObject=s;a.play().catch(()=>{});
+  a.srcObject=s;a.volume=VOL[vi];a.muted=muted;a.play().catch(()=>{});
 }
 
 function askMic(){
-  if(isHost) hostData({t:"req",name:me.name},{peer:peer.id});
-  else hostConn.send({t:"req",name:me.name});
+  if(isHost)hostData({t:"req",name:me.name},{peer:peer.id});
+  else if(hostConn)hostConn.send({t:"req",name:me.name});
   $("askmic").textContent="تم إرسال الطلب ⏳";
 }
 
 function grant(id){
   delete reqs[id];
-  if(isHost) hostData({t:"grant",to:id},{});
-  else hostConn.send({t:"grant",to:id});
-  ui();
+  if(isHost)hostData({t:"grant",to:id},{});
+  else if(hostConn)hostConn.send({t:"grant",to:id});
+  info();
 }
 
-function ui(){
-  $("plist").innerHTML=peers.map(p=>"<div>"+esc(p.name)+(p.mil?'<span class="tag mil">عسكري</span>':"")+"</div>").join("");
-  $("reqs").innerHTML="";
-  if(me.mil) Object.entries(reqs).forEach(([id,n])=>{
-    const d=document.createElement("div");d.className="card room";
-    d.innerHTML="<span>✋ "+esc(n)+" يطلب المايك</span>";
-    const b=document.createElement("button");b.className="green";b.textContent="موافقة";b.onclick=()=>grant(id);
-    d.appendChild(b);$("reqs").appendChild(d);
-  });
-  $("ptt").classList.toggle("hide",!canTalk);
-  $("askmic").classList.toggle("hide",canTalk);
+function leave(){
+  on=false;hostConn=null;
+  try{peer.destroy()}catch(e){}
+  if(mic)mic.getTracks().forEach(t=>t.stop());
+  mic=null;peers=[];reqs={};canTalk=false;
+  $("audios").innerHTML="";$("askmic").textContent="✋ اطلب المايك";
+  $("ptt").classList.remove("on");$("tx").classList.remove("on");
+  screen();info();
 }
 
 function esc(s){return String(s).replace(/[&<>"']/g,c=>"&#"+c.charCodeAt(0)+";")}
 
-function leave(){
-  try{peer.destroy()}catch(e){}
-  if(mic)mic.getTracks().forEach(t=>t.stop());
-  $("audios").innerHTML="";$("askmic").textContent="✋ اطلب المايك";
-  show("home");
-}
-
-const ptt=$("ptt"),tr=()=>mic.getAudioTracks()[0];
-const on=e=>{e.preventDefault();if(canTalk){tr().enabled=true;ptt.classList.add("on")}};
-const off=e=>{e.preventDefault();tr().enabled=false;ptt.classList.remove("on")};
-["mousedown","touchstart"].forEach(v=>ptt.addEventListener(v,on));
-["mouseup","mouseleave","touchend"].forEach(v=>ptt.addEventListener(v,off));
+const ptt=$("ptt");
+const down=e=>{e.preventDefault();if(on&&canTalk&&mic){mic.getAudioTracks()[0].enabled=true;ptt.classList.add("on");$("tx").classList.add("on")}};
+const up=e=>{e.preventDefault();if(mic)mic.getAudioTracks()[0].enabled=false;ptt.classList.remove("on");$("tx").classList.remove("on")};
+["mousedown","touchstart"].forEach(v=>ptt.addEventListener(v,down));
+["mouseup","mouseleave","touchend","touchcancel"].forEach(v=>ptt.addEventListener(v,up));
 
 init();
 </script>
