@@ -69,7 +69,6 @@ input{flex:1;min-width:0;background:#0d0f10;color:#c4d374;border:1px solid #ffff
 </div>
 <div id="reqs" style="width:100%;max-width:290px"></div>
 <button id="ptt" class="hide">🎙️<br>اضغط للتكلم</button>
-<button id="askmic" class="b hide" onclick="askMic()">✋ اطلب المايك</button>
 <div id="audios"></div>
 
 <script>
@@ -177,7 +176,6 @@ function info(){
     d.appendChild(b);$("reqs").appendChild(d);
   });
   $("ptt").classList.toggle("hide",!(on&&canTalk));
-  $("askmic").classList.toggle("hide",!(on&&!canTalk));
 }
 
 /* ===== الاتصال ===== */
@@ -185,7 +183,7 @@ async function join(r){
   try{mic=await navigator.mediaDevices.getUserMedia({audio:true})}
   catch(e){alert("لازم تسمح بالمايك");return}
   mic.getAudioTracks()[0].enabled=false;
-  room={freq:r,name:nameOf(r)};canTalk=asMil;called={};reqs={};peers=[];hostConns={};isHost=false;on=true;
+  room={freq:r,name:nameOf(r)};canTalk=true;called={};reqs={};peers=[];hostConns={};isHost=false;on=true;
   screen();info();
   const hid="radio-"+APP+"-f"+r;
   peer=new Peer(hid);
@@ -272,7 +270,7 @@ function leave(){
   try{peer.destroy()}catch(e){}
   if(mic)mic.getTracks().forEach(t=>t.stop());
   mic=null;peers=[];reqs={};canTalk=false;
-  $("audios").innerHTML="";$("askmic").textContent="✋ اطلب المايك";
+  $("audios").innerHTML="";
   $("ptt").classList.remove("on");$("tx").classList.remove("on");
   screen();info();
 }
